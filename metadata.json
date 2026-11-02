@@ -1,0 +1,6 @@
+{
+  "name": "ECOSPHERE - Smart City Solutions",
+  "description": "An integrated smart-city web platform combining intelligent waste management, smart farming, and environmental monitoring with CityPulse AI, created by Blossoms Convent School.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
