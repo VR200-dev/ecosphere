@@ -101,7 +101,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenDashboard, onOpenCityPulse }) 
             <div className="relative mx-auto max-w-lg lg:max-w-none">
               <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-slate-100 shadow-xl dark:border-slate-800 dark:bg-slate-900">
                 <img
-                  src="/src/assets/images/hero_smart_city_1793605178815.jpg"
+                  src="/images/hero_smart_city_1793605178815.jpg"
                   alt="ECOSPHERE Smart City Architectural Model by Blossoms Convent School"
                   referrerPolicy="no-referrer"
                   className="h-full w-full object-cover transition-transform duration-500 hover:scale-[1.02]"
