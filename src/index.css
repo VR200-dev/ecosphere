@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  :root {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  body {
+    overflow-x: hidden;
+    background: linear-gradient(180deg, #ecf7f1 0%, #f4faf6 30%, #eaf5ee 70%, #f2f9f5 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
+
+  .dark body {
+    background: linear-gradient(180deg, #05160e 0%, #071f14 30%, #04140b 70%, #061a10 100%);
+    background-attachment: fixed;
+  }
+}
+
+.font-mono-tabular {
+  font-family: 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Greenish atmospheric mesh glow */
+.eco-gradient-bg {
+  background: linear-gradient(180deg, #ecf7f1 0%, #f5faf7 25%, #e9f5ee 50%, #f3f9f5 75%, #ebf6f0 100%);
+}
+
+.dark .eco-gradient-bg {
+  background: linear-gradient(180deg, #05160e 0%, #082116 25%, #05170d 50%, #071c11 75%, #05150d 100%);
+}
+
+/* Custom subtle scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(16, 185, 129, 0.25);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(16, 185, 129, 0.45);
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(16, 185, 129, 0.3);
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(16, 185, 129, 0.5);
+}
