@@ -68,7 +68,7 @@ export const SubsystemIrrigation: React.FC<SubsystemIrrigationProps> = ({
             {/* Generated Image Showcase */}
             <div className="overflow-hidden rounded-2xl border border-slate-200/80 shadow-sm dark:border-slate-800/80">
               <img
-                src="/src/assets/images/smart_agriculture_1793605180963.jpg"
+                src="/images/smart_agriculture_1793605180963.jpg"
                 alt="ECOSPHERE Automated Precision Agriculture and Irrigation by Blossoms Convent School"
                 referrerPolicy="no-referrer"
                 className="h-64 w-full object-cover sm:h-72"
