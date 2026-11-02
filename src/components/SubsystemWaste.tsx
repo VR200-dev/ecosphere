@@ -64,7 +64,7 @@ export const SubsystemWaste: React.FC<SubsystemWasteProps> = ({ telemetry }) => 
             {/* Generated Image Showcase */}
             <div className="overflow-hidden rounded-2xl border border-slate-200/80 shadow-sm dark:border-slate-800/80">
               <img
-                src="/src/assets/images/smart_waste_system_1793605179205.jpg"
+                src="/images/smart_waste_system_1793605179205.jpg"
                 alt="ECOSPHERE Smart Waste Segregation Machine by Blossoms Convent School"
                 referrerPolicy="no-referrer"
                 className="h-64 w-full object-cover sm:h-72"
