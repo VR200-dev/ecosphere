@@ -56,11 +56,34 @@ export const CityPulseAI: React.FC<CityPulseAIProps> = ({
   const [activeCategory, setActiveCategory] = useState<'all' | 'chat' | 'project' | 'telemetry'>('all');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  const analysisPrompt = [
+    "Analyse this ECOSPHERE sensor snapshot across waste, irrigation, and air quality.",
+    "Use only the supplied readings. Do not invent missing values or claim a sensor is live unless the connection and subsystem statuses support that.",
+    "First state whether the data is HARDWARE or SIMULATOR and whether the overall connection is LIVE, WAITING, STALE, DISCONNECTED, or DEMO.",
+    "For each subsystem, report its online status, interpret the readings, identify any alert, and give practical next steps.",
+    "Explain limitations: MQ-2 raw values are an indicative gas-sensor reading, not a certified AQI; soil moisture percentage is the project's mapped sensor estimate.",
+    "If a subsystem is offline, waiting, stale, or missing, clearly say that it cannot currently be assessed. Finish with a concise overall ECOSPHERE status.",
+    "",
+    "CURRENT SNAPSHOT (values supplied by the dashboard):",
+    JSON.stringify({
+      mode: telemetry.mode,
+      connectionStatus: telemetry.connectionStatus,
+      isStale: telemetry.isStale,
+      lastPacketTimestamp: telemetry.lastPacketTimestamp,
+      subsystemStatus: telemetry.subsystemStatus,
+      waste: telemetry.waste,
+      irrigation: telemetry.irrigation,
+      air: telemetry.air,
+      alerts: telemetry.alerts,
+    }, null, 2),
+  ].join("\\n");
+
   const prompts = [
     { label: "👋 How are you doing today?", category: "chat", text: "Hello! How are you doing today?" },
     { label: "🤖 What can you do?", category: "chat", text: "What can you do and what do you know about ECOSPHERE?" },
     { label: "😄 Tell me a science joke", category: "chat", text: "Tell me a fun science or smart-city joke!" },
     { label: "🌱 Give me composting tips", category: "chat", text: "What are some best practices for organic composting?" },
+    { label: "✨ Analyse all current readings", category: "telemetry", text: analysisPrompt },
     { label: "📊 Current live sensor conditions", category: "telemetry", text: "What is the current live condition of all ECOSPHERE subsystems?" },
     { label: "🗑️ How does waste segregation work?", category: "project", text: "Explain the waste segregation mechanism and the composting model." },
     { label: "💧 Why is the irrigation pump ON/OFF?", category: "telemetry", text: "What is the soil moisture and pump status right now?" },
