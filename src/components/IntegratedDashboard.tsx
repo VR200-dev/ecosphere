@@ -377,6 +377,9 @@ export const IntegratedDashboard: React.FC<IntegratedDashboardProps> = ({
           </div>
         </div>
 
+        {/* CityPulse AI analysis for the dashboard's current demonstration snapshot */}
+        <CityPulseAnalysisPanel telemetry={telemetry} />
+
         {/* Interactive Scenario Simulator & Testing Panel */}
         <div className="mt-10 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
