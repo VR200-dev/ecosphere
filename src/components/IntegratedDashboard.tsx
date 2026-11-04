@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import {
   Activity,
+  Bot,
+  Sparkles,
+  Loader2,
   AlertTriangle,
   CheckCircle2,
   Clock,
@@ -377,6 +380,9 @@ export const IntegratedDashboard: React.FC<IntegratedDashboardProps> = ({
           </div>
         </div>
 
+        {/* CityPulse AI analysis for the dashboard's current demonstration snapshot */}
+        <CityPulseAnalysisPanel telemetry={telemetry} />
+
         {/* Interactive Scenario Simulator & Testing Panel */}
         <div className="mt-10 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
@@ -631,6 +637,89 @@ export const IntegratedDashboard: React.FC<IntegratedDashboardProps> = ({
           </div>
         </div>
       </div>
+    </section>
+  );
+};
+
+
+interface CityPulseAnalysisPanelProps {
+  telemetry: UnifiedTelemetry;
+}
+
+const CityPulseAnalysisPanel: React.FC<CityPulseAnalysisPanelProps> = ({ telemetry }) => {
+  const [analysis, setAnalysis] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [aiStatus, setAiStatus] = useState<'idle' | 'gemini' | 'fallback' | 'error'>('idle');
+
+  const runAnalysis = async () => {
+    if (isLoading) return;
+    setIsLoading(true);
+    setAiStatus('idle');
+    setAnalysis('');
+    const snapshot = {
+      dataLabel: 'DEMO DATA — NOT LIVE HARDWARE DATA',
+      mode: telemetry.mode,
+      connectionStatus: telemetry.connectionStatus,
+      isStale: telemetry.isStale,
+      lastPacketTimestamp: telemetry.lastPacketTimestamp,
+      subsystemStatus: telemetry.subsystemStatus,
+      waste: telemetry.waste,
+      irrigation: telemetry.irrigation,
+      air: telemetry.air,
+      alerts: telemetry.alerts,
+    };
+    const prompt = [
+      'You are CityPulse AI. Analyse the following ECOSPHERE DEMONSTRATION/SIMULATOR data only.',
+      'IMPORTANT: These are demo values, not real sensor measurements. State this clearly. Never describe them as live, real-world or measured environmental conditions.',
+      'Give a detailed report: overall demo status; waste analysis with dry/organic percentages; irrigation against threshold and pump state; air sensor interpretation; alerts; three practical recommendations.',
+      'MQ-2 raw values are not certified AQI. Soil moisture percentage is a project-mapped estimate. Do not invent missing data or claim real environmental impact.',
+      'Use clear headings and plain language suitable for a school project demonstration.',
+      'DEMO SNAPSHOT:',
+      JSON.stringify(snapshot, null, 2)
+    ].join('\n');
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: [{ role: 'user', content: prompt }] })
+      });
+      if (!response.ok) throw new Error('AI service returned HTTP ' + response.status);
+      const data = await response.json();
+      setAnalysis(data.reply || 'The AI service returned an empty response.');
+      setAiStatus(data.isLiveAI ? 'gemini' : 'fallback');
+    } catch (error) {
+      setAnalysis('CityPulse AI could not reach the analysis service. Check the backend and Gemini API configuration, then try again. ' + (error instanceof Error ? error.message : ''));
+      setAiStatus('error');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <section className="mt-8 rounded-2xl border border-emerald-300 bg-white p-6 shadow-sm dark:border-emerald-800 dark:bg-slate-900">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400">
+            <Bot className="h-5 w-5" />
+            <span className="text-xs font-extrabold uppercase tracking-wider">CityPulse AI · Dashboard Analysis</span>
+          </div>
+          <h3 className="mt-1 text-xl font-extrabold text-slate-900 dark:text-white">Understand the demonstration readings</h3>
+          <p className="mt-1 max-w-2xl text-xs text-slate-600 dark:text-slate-300">Gemini analyses the current dashboard snapshot and gives explanations, findings and recommendations.</p>
+        </div>
+        <button onClick={runAnalysis} disabled={isLoading} className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-3 text-sm font-bold text-white shadow-sm hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60">
+          {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+          {isLoading ? 'Analysing demo data…' : 'Analyse demo readings'}
+        </button>
+      </div>
+      <div className="mt-4 flex flex-wrap items-center gap-2">
+        <span className="rounded-full border border-sky-300 bg-sky-50 px-3 py-1 text-[11px] font-extrabold text-sky-800 dark:border-sky-800 dark:bg-sky-950/50 dark:text-sky-300">DEMO DATA · NOT LIVE HARDWARE</span>
+        {aiStatus === 'gemini' && <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-400">Gemini AI response</span>}
+        {aiStatus === 'fallback' && <span className="text-xs font-semibold text-amber-700 dark:text-amber-400">Rule-based fallback · Gemini unavailable</span>}
+        {aiStatus === 'error' && <span className="text-xs font-semibold text-rose-700 dark:text-rose-400">AI service unavailable</span>}
+      </div>
+      {analysis && <div className="mt-4 whitespace-pre-wrap rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-800 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200">{analysis}</div>}
+      {!analysis && <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">Press “Analyse demo readings” to generate feedback from the values currently displayed above.</p>}
     </section>
   );
 };
